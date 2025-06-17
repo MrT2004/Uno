@@ -125,6 +125,12 @@
                 }
                 else
                 {
+                    if ((card.Value == Value.Wild || card.Value == Value.DrawFour) && newColor == null)
+                    {
+                        curPlayer.RequestHandler.Send(Protocol.ProtocolManager.Error());
+                        return;
+                    }
+
                     discardPile.Push(card);
                     curPlayer.RequestHandler.Send(Protocol.ProtocolManager.OK());
                     switch (card.Value)
@@ -154,15 +160,8 @@
                             currentPlayerIndex =NextPlayer(2);
                             break;
                         case Value.Wild:
-                            if (newColor == null)
-                            {
-                                curPlayer.RequestHandler.Send(Protocol.ProtocolManager.Error());
-                            }
-                            else
-                            {
-                                card = new(card.Color, card.Value);
-                                discardPile.Cards[0].Color = newColor.Value;
-                            }
+                            card = new(card.Color, card.Value);
+                            discardPile.Cards[0].Color = newColor!.Value;
                             currentPlayerIndex = NextPlayer();
                             break;
                         case Value.DrawFour:
@@ -175,15 +174,8 @@
                                     return;
                                 }
                             }
-                            if (newColor == null)
-                            {
-                                curPlayer.RequestHandler.Send(Protocol.ProtocolManager.Error());
-                            }
-                            else
-                            {
-                                card = new(card.Color, card.Value);
-                                discardPile.Cards[0].Color = newColor.Value;
-                            }
+                            card = new(card.Color, card.Value);
+                            discardPile.Cards[0].Color = newColor!.Value;
                             Players[NextPlayer()].Hand.InsertCard(drawPile.DrawCard());
                             Players[NextPlayer()].Hand.InsertCard(drawPile.DrawCard());
                             Players[NextPlayer()].Hand.InsertCard(drawPile.DrawCard());
