@@ -17,7 +17,7 @@ namespace Uno_Client.Game
         private string[] playerHandLengths = [];
         private bool OK = false;
         private bool gameOver = false;
-        private bool responseRecieved = false;
+        private bool responseReceived = false;
         private bool reload = false;
 
         public Game(Networking.RequestHandler requestHandler)
@@ -428,11 +428,11 @@ namespace Uno_Client.Game
         }
         private void WaitForResponse()
         {
-            while (!responseRecieved)
+            while (!responseReceived)
             {
                 Thread.Sleep(10);
             }
-            responseRecieved = false;
+            responseReceived = false;
         }
         private void EndGame()
         {
@@ -474,18 +474,18 @@ namespace Uno_Client.Game
                 if (args.Protocol.Type.SequenceEqual(ProtocolTypes.OK))
                 {
                     OK = true;
-                    responseRecieved = true;
+                    responseReceived = true;
                 }
                 else if (args.Protocol.Type.SequenceEqual(ProtocolTypes.Error))
                 {
                     OK = false;
-                    responseRecieved = true;
+                    responseReceived = true;
                 }
                 else if (args.Protocol.Type.SequenceEqual(ProtocolTypes.GameList))
                 {
                     availableGames = Encoding.ASCII.GetString(args.Protocol.Content);
                     OK = true;
-                    responseRecieved = true;
+                    responseReceived = true;
                 }
                 else if (args.Protocol.Type.SequenceEqual(ProtocolTypes.GameInfo))
                 {
@@ -501,7 +501,7 @@ namespace Uno_Client.Game
                     currentPlayer = int.Parse(gameInfo[2]);
                     playerHandLengths = gameInfo[3].Split(',');
                     OK = true;
-                    responseRecieved = true;
+                    responseReceived = true;
                     reload = true;
                 }
                 else if (args.Protocol.Type.SequenceEqual(ProtocolTypes.PlayerCards))
@@ -524,7 +524,7 @@ namespace Uno_Client.Game
                         }
                     }
                     OK = true;
-                    responseRecieved = true;
+                    responseReceived = true;
                 }
                 else if (args.Protocol.Type.SequenceEqual(ProtocolTypes.GameStart))
                 {
@@ -532,20 +532,20 @@ namespace Uno_Client.Game
                     gameID = int.Parse(gameStartInfo[0]);
                     playerID = int.Parse(gameStartInfo[1]);
                     OK = true;
-                    responseRecieved = true;
+                    responseReceived = true;
                 }
                 else if (args.Protocol.Type.SequenceEqual(ProtocolTypes.GameEnd))
                 {
                     gameOver = true;
                     winnerID = int.Parse(args.Protocol.Content);
                     OK = true;
-                    responseRecieved = true;
+                    responseReceived = true;
                     reload = true;
                 }
                 else
                 {
                     OK = false;
-                    responseRecieved = true;
+                    responseReceived = true;
                 }
             }
         }
